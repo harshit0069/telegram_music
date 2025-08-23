@@ -58,8 +58,8 @@ Commands
 Command	Description
 
 /play <URL>	Download & play song in VC
-/pause	Pause current song
-/resume	Resume playback
+/pause Pause current song
+/resume Resume playback
 
 
 
