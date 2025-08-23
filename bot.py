@@ -3,8 +3,7 @@ import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from pytgcalls import PyTgCalls, idle
-from pytgcalls.types.input_stream import InputAudioStream
-from pytgcalls.types.input_stream.quality import HighQualityAudio
+from pytgcalls.types import AudioPiped
 import yt_dlp
 
 # === ENV Variables ===
@@ -52,13 +51,10 @@ async def play(client: Client, message: Message):
         file_path = await download_audio(query)
         await message.reply_text(f"✅ Downloaded: {os.path.basename(file_path)}\nJoining VC...")
 
-        # Join VC & play (OLDER version style)
+        # Join VC & play (NEW syntax)
         await pytgcalls.join_group_call(
             GROUP_CHAT_ID,
-            InputAudioStream(
-                file_path,
-                HighQualityAudio()
-            )
+            AudioPiped(file_path)
         )
         await message.reply_text("▶️ Playing now!")
     except Exception as e:
