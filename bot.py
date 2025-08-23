@@ -3,7 +3,8 @@ import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from pytgcalls import PyTgCalls, idle
-from pytgcalls.types import AudioPiped
+from pytgcalls.types.input_stream import InputAudioStream
+from pytgcalls.types.input_stream.quality import HighQualityAudio
 import yt_dlp
 
 # === ENV Variables ===
@@ -34,7 +35,10 @@ async def download_audio(url: str) -> str:
     }
     os.makedirs("downloads", exist_ok=True)
     loop = asyncio.get_event_loop()
-    info = await loop.run_in_executor(None, lambda: yt_dlp.YoutubeDL(ydl_opts).extract_info(url, download=True))
+    info = await loop.run_in_executor(
+        None, 
+        lambda: yt_dlp.YoutubeDL(ydl_opts).extract_info(url, download=True)
+    )
     return ydl_opts['outtmpl'].replace("%(title)s.%(ext)s", f"{info['title']}.{info['ext']}")
 
 # === /play Command ===
@@ -46,15 +50,18 @@ async def play(client: Client, message: Message):
 
     query = " ".join(message.command[1:])
     msg = await message.reply_text("🔎 Searching & downloading...")
-    
+
     try:
         file_path = await download_audio(query)
         await message.reply_text(f"✅ Downloaded: {os.path.basename(file_path)}\nJoining VC...")
 
-        # Join VC & play (NEW syntax)
+        # Old API: InputAudioStream + HighQualityAudio
         await pytgcalls.join_group_call(
             GROUP_CHAT_ID,
-            AudioPiped(file_path)
+            InputAudioStream(
+                file_path,
+                HighQualityAudio()
+            )
         )
         await message.reply_text("▶️ Playing now!")
     except Exception as e:
@@ -86,7 +93,10 @@ async def main():
 
     # Flask server for uptime robot
     import threading
-    threading.Thread(target=lambda: flask_app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000))), daemon=True).start()
+    threading.Thread(
+        target=lambda: flask_app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000))),
+        daemon=True
+    ).start()
 
     await idle()
     await app.stop()
