@@ -22,9 +22,9 @@ Bot commands: `/play <YouTube URL>` aur `/pause` (optional `/resume` bhi include
 API_ID=123456 API_HASH=abcdef1234567890 BOT_TOKEN=123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11 GROUP_CHAT_ID=-1001234567890 PORT=5000
 
 - Install dependencies:
-```bash
+```
 pip install -r requirements.txt
-
+```
 
 ---
 
