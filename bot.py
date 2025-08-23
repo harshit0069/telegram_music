@@ -1,10 +1,9 @@
-# music_bot.py
 import os
 import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from pytgcalls import PyTgCalls, idle
-from pytgcalls.types.input_stream import InputStream, InputAudioStream
+from pytgcalls.types import AudioPiped
 import yt_dlp
 
 # === ENV Variables ===
@@ -42,21 +41,20 @@ async def download_audio(url: str) -> str:
 @app.on_message(filters.command("play") & filters.chat(GROUP_CHAT_ID))
 async def play(client: Client, message: Message):
     if len(message.command) < 2:
-        await message.reply_text("⚠️ Usage: /play <YouTube URL or song name>")
+        await message.reply_text("⚠️ Usage: /play <YouTube URL>")
         return
 
     query = " ".join(message.command[1:])
     msg = await message.reply_text("🔎 Searching & downloading...")
     
-    # Assume URL is YouTube link for simplicity
     try:
         file_path = await download_audio(query)
         await message.reply_text(f"✅ Downloaded: {os.path.basename(file_path)}\nJoining VC...")
-        
-        # Join VC & play
-        pytgcalls.join_group_call(
+
+        # Join VC & play using AudioPiped (old stable style)
+        await pytgcalls.join_group_call(
             GROUP_CHAT_ID,
-            InputStream(InputAudioStream(file_path))
+            AudioPiped(file_path)
         )
         await message.reply_text("▶️ Playing now!")
     except Exception as e:
@@ -82,12 +80,10 @@ async def resume(client: Client, message: Message):
 
 # === Main ===
 async def main():
-    # Start PyTgCalls & Pyrogram
     await app.start()
     await pytgcalls.start()
     print("🎵 Music Bot running...")
     
-    # Flask run in separate thread
     import threading
     threading.Thread(target=lambda: flask_app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000))), daemon=True).start()
 
