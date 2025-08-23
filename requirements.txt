@@ -1,5 +1,5 @@
-pyrogram==2.0.106
-tgcrypto==1.2.5
+pyrogram==1.4.16
+tgcrypto==1.2.2
 yt-dlp
 flask==2.3.3
-git+https://github.com/pytgcalls/pytgcalls
+pytgcalls==0.9.7
