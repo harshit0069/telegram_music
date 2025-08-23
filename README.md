@@ -40,9 +40,9 @@ Deployment (Render)
 
 
 4. Start command:
-
-python music_bot.py
-
+```
+python bot.py
+```
 
 5. Use UptimeRobot to ping your Render URL every 5–10 mins:
 
