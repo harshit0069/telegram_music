@@ -3,7 +3,8 @@ import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from pytgcalls import PyTgCalls, idle
-from pytgcalls.types import AudioPiped
+from pytgcalls.types.input_stream import InputAudioStream
+from pytgcalls.types.input_stream.quality import HighQualityAudio
 import yt_dlp
 
 # === ENV Variables ===
@@ -51,10 +52,13 @@ async def play(client: Client, message: Message):
         file_path = await download_audio(query)
         await message.reply_text(f"✅ Downloaded: {os.path.basename(file_path)}\nJoining VC...")
 
-        # Join VC & play using AudioPiped (old stable style)
+        # Join VC & play (OLDER version style)
         await pytgcalls.join_group_call(
             GROUP_CHAT_ID,
-            AudioPiped(file_path)
+            InputAudioStream(
+                file_path,
+                HighQualityAudio()
+            )
         )
         await message.reply_text("▶️ Playing now!")
     except Exception as e:
@@ -83,7 +87,8 @@ async def main():
     await app.start()
     await pytgcalls.start()
     print("🎵 Music Bot running...")
-    
+
+    # Flask server for uptime robot
     import threading
     threading.Thread(target=lambda: flask_app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000))), daemon=True).start()
 
