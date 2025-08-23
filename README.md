@@ -65,15 +65,4 @@ Command	Description
 
 ---
 
-Folder Structure
-
-.
-├── music_bot.py
-├── requirements.txt
-├── downloads/        # Automatically created for downloaded songs
-└── README.md
-
-
----
-
 Made with ❤️ by Harshit
